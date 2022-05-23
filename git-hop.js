@@ -10,13 +10,34 @@ const { execSync } = require("child_process")
 const gitHop = ({
 	hasBack, //
 }) => {
-	const branches = execSync(`git branch --points-at @`, { encoding: "utf-8" }) // | sed '/^  @$/d;')"
+	const branches = execSync(`git branch --points-at @ --all`, { encoding: "utf-8" }) // | sed '/^  @$/d;')"
 		.split("\n")
 		.filter(b => b.trim() !== "@")
 		.filter(b => !!b)
-		.map((b, idx) => ({
+		.map((b) => ({
 			isCurrent: b.startsWith("* "),
-			branch: b.slice(2),
+			branchfull: b.slice(2),
+		}))
+		.map((b) => ({
+			...b,
+			isRemote: b.branchfull.startsWith("remotes/"),
+		}))
+		.map((b) => ({
+			...b,
+			branch: b.isRemote
+				? b.branchfull.replace(/^remotes\/[^/]+\//, "")
+				: b.branchfull,
+		}))
+		.map((b, _idx, all) => ({
+			...b,
+			isNotCheckedOutLocally: b.isRemote && !all.some(otherB => !otherB.isRemote && otherB.branch === b.branch),
+		}))
+		.filter((b, _idx, all) => {
+			return !b.isRemote 
+				||  b.isNotCheckedOutLocally
+		})
+		.map((b, idx) => ({
+			...b,
 			idx,
 		}))
 
