@@ -20,6 +20,20 @@ const gitHop = ({
 			idx,
 		}))
 
+	if (branches.length === 1) {
+		const msg = `noop (only 1 branch found ("${branches[0].branch}"))\n`
+		process.stderr.write(msg)
+		process.exit(1)
+		return
+	}
+	if (branches.length === 0) {
+		/** should be impossible afaik, but anyhow */
+		const msg = "noop (0 branches found)\n"
+		process.stderr.write(msg)
+		process.exit(1)
+		return
+	}
+
 	const normalizeFor = length => idx => (idx + length) % length
 	const normalize = normalizeFor(branches.length)
 
