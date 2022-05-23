@@ -1,0 +1,11 @@
+{
+  "name": "git-hop",
+  "version": "0.0.0",
+  "main": "git-hop.js",
+  "bin": {
+  	"git-hop": "git-hop.js"
+  },
+  "repository": "http://github.com/kiprasmel/git-hop",
+  "author": "Kipras Melnikovas <kipras@kipras.org> (https://kipras.org/)",
+  "license": "MIT"
+}
